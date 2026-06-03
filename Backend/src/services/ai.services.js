@@ -155,9 +155,9 @@ async function generatePdfFromHtml(htmlContent) {
 
   try {
     browser = await puppeteer.launch({
-      args: chromium.args,
-      headless: true,
-    });
+  args: chromium.args || [],
+  headless: true,
+});
 
     const page = await browser.newPage();
 
