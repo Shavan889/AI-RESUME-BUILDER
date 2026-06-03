@@ -146,21 +146,17 @@ Return valid JSON only.
 }
 
 async function generatePdfFromHtml(htmlContent) {
-  console.log("Puppeteer executable:", puppeteer.executablePath());
-  let browser;
+  const browser = await puppeteer.launch({
+    headless: true,
+    channel: "chrome",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
+  });
 
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath:
-        "/opt/render/.cache/puppeteer/chrome/linux-149.0.7827.22/chrome-linux64/chrome",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-      ],
-    });
-
     const page = await browser.newPage();
 
     await page.setContent(htmlContent, {
@@ -170,11 +166,10 @@ async function generatePdfFromHtml(htmlContent) {
     return await page.pdf({
       format: "A4",
       printBackground: true,
+      preferCSSPageSize: true,
     });
   } finally {
-    if (browser) {
-      await browser.close();
-    }
+    await browser.close();
   }
 }
 
