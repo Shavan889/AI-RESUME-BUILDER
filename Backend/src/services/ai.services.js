@@ -1,7 +1,8 @@
 const { GoogleGenAI } = require("@google/genai");
 const z = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY,
@@ -146,29 +147,15 @@ Return valid JSON only.
 }
 
 async function generatePdfFromHtml(htmlContent) {
-  const executablePathCandidate = puppeteer.executablePath();
-  const executablePath =
-    executablePathCandidate && typeof executablePathCandidate.then === "function"
-      ? await executablePathCandidate
-      : executablePathCandidate;
-
-  if (!executablePath || typeof executablePath !== "string") {
-    throw new Error(
-      "Puppeteer executable path not found. Ensure Chromium is installed and available to Puppeteer."
-    );
-  }
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-    ],
-  });
+  let browser;
 
   try {
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+
     const page = await browser.newPage();
 
     await page.setContent(htmlContent, {
@@ -181,7 +168,9 @@ async function generatePdfFromHtml(htmlContent) {
       preferCSSPageSize: true,
     });
   } finally {
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    }
   }
 }
 
