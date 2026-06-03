@@ -151,11 +151,12 @@ async function generatePdfFromHtml(htmlContent) {
   try {
     browser = await puppeteer.launch({
       headless: true,
+      executablePath:
+        "/opt/render/.cache/puppeteer/chrome/linux-149.0.7827.22/chrome-linux64/chrome",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
       ],
     });
 
@@ -168,11 +169,7 @@ async function generatePdfFromHtml(htmlContent) {
     return await page.pdf({
       format: "A4",
       printBackground: true,
-      preferCSSPageSize: true,
     });
-  } catch (err) {
-    console.error("PDF Generation Error:", err);
-    throw err;
   } finally {
     if (browser) {
       await browser.close();
