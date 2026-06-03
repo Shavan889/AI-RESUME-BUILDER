@@ -146,9 +146,9 @@ Return valid JSON only.
 }
 
 async function generatePdfFromHtml(htmlContent) {
-  const executablePath = puppeteer.executablePath();
+  const executablePath = await puppeteer.executablePath();
 
-  if (!executablePath) {
+  if (!executablePath || typeof executablePath !== "string") {
     throw new Error(
       "Puppeteer executable path not found. Ensure Chromium is installed and available to Puppeteer."
     );
