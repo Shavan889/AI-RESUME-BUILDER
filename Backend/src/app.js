@@ -8,9 +8,20 @@ const interviewRouter = require("./routes/interview.routes");
 
 const app = express();
 
+const allowedOrigins = [
+  "https://ai-resume-builder-cmmgjzwuh-shavans-projects.vercel.app",
+  "https://ai-resume-builder-jade-seven.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "https://ai-resume-builder-cmmgjzwuh-shavans-projects.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
