@@ -6,152 +6,46 @@ import { useNavigate, useParams } from "react-router";
 const Interview = () => {
   const [activeTab, setActiveTab] = useState("technical");
   const [openQuestion, setOpenQuestion] = useState(0);
-
-  // const report = {
-  //   matchScore: 88,
-
-  //   technicalQuestions: [
-  //     {
-  //       question:
-  //         "Explain the Node.js event loop and how it handles asynchronous I/O operations.",
-  //       intention:
-  //         "To assess understanding of asynchronous architecture and non-blocking execution.",
-  //       answer:
-  //         "Explain phases of event loop, callback queue, microtasks, and how Node delegates async tasks to libuv.",
-  //     },
-
-  //     {
-  //       question:
-  //         "How do you optimize a MongoDB aggregation pipeline for high-volume data?",
-  //       intention: "To test database optimization and indexing knowledge.",
-  //       answer:
-  //         "Talk about indexing, early filtering using $match, reducing payload size, and using explain().",
-  //     },
-
-  //     {
-  //       question:
-  //         "Can you describe the Cache-Aside pattern and when you would use Redis in a Node.js application?",
-  //       intention:
-  //         "To evaluate caching strategies and distributed systems knowledge.",
-  //       answer:
-  //         "Explain lazy loading cache, Redis usage for reducing DB load, and cache invalidation strategies.",
-  //     },
-
-  //     {
-  //       question:
-  //         "What are the challenges of migrating a monolithic application to a modular service-based architecture?",
-  //       intention: "To assess scalability and architecture understanding.",
-  //       answer:
-  //         "Mention service communication, data consistency, deployment complexity, and monitoring.",
-  //     },
-  //   ],
-
-  //   behavioralQuestions: [
-  //     {
-  //       question:
-  //         "Tell me about a time you solved a critical production issue.",
-  //       intention:
-  //         "To evaluate debugging approach and calmness under pressure.",
-  //       answer:
-  //         "Use STAR method and explain the situation, actions, and final outcome.",
-  //     },
-
-  //     {
-  //       question:
-  //         "Describe a situation where you had to learn a new technology quickly.",
-  //       intention: "To test adaptability and learning ability.",
-  //       answer:
-  //         "Mention quick research, implementation, and practical application.",
-  //     },
-  //   ],
-
-  //   skillGaps: [
-  //     {
-  //       skill: "Message Queues (Kafka/RabbitMQ)",
-  //       severity: "high",
-  //     },
-
-  //     {
-  //       skill: "Advanced Docker & CI/CD Pipelines",
-  //       severity: "medium",
-  //     },
-
-  //     {
-  //       skill: "Distributed Systems Design",
-  //       severity: "medium",
-  //     },
-
-  //     {
-  //       skill: "Production-level Redis management",
-  //       severity: "low",
-  //     },
-  //   ],
-
-  //   preparationPlan: [
-  //     {
-  //       day: 1,
-  //       focus: "Advanced React Optimization",
-  //       tasks: [
-  //         "Revise React.memo",
-  //         "Study useMemo/useCallback",
-  //         "Practice rendering optimization",
-  //       ],
-  //     },
-
-  //     {
-  //       day: 2,
-  //       focus: "Node.js & Event Loop",
-  //       tasks: [
-  //         "Revise async architecture",
-  //         "Practice streams",
-  //         "Understand clustering",
-  //       ],
-  //     },
-
-  //     {
-  //       day: 3,
-  //       focus: "MongoDB Performance",
-  //       tasks: [
-  //         "Aggregation pipelines",
-  //         "Indexing strategies",
-  //         "Query optimization",
-  //       ],
-  //     },
-
-  //     {
-  //       day: 4,
-  //       focus: "System Design Basics",
-  //       tasks: ["Redis caching", "Scalability concepts", "Rate limiting"],
-  //     },
-
-  //     {
-  //       day: 5,
-  //       focus: "Mock Interviews",
-  //       tasks: [
-  //         "Behavioral questions",
-  //         "Technical mock rounds",
-  //         "Resume explanation",
-  //       ],
-  //     },
-  //   ],
-  // };
+  const [error, setError] = useState(null);
 
   const { report, getReportById, loading, getResumePdf } = useInterview();
   const { interviewId } = useParams();
-  const param = new URLSearchParams(window.location.search);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (interviewId) {
-      getReportById(interviewId);
-    }
+    const loadReport = async () => {
+      if (interviewId) {
+        try {
+          await getReportById(interviewId);
+          setError(null);
+        } catch (err) {
+          setError("Failed to load interview report. Please go back and try again.");
+        }
+      }
+    };
+    loadReport();
   }, [interviewId]);
 
-  if (loading || !report) {
+  if (loading) {
     return (
       <main>
         <div className="loader-container">
           <div className="loader"></div>
           <h1>Loading...</h1>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !report) {
+    return (
+      <main>
+        <div className="error-container" style={{ textAlign: "center", padding: "2rem" }}>
+          <h1>Error</h1>
+          <p>{error || "Interview report not found"}</p>
+          <button onClick={() => navigate("/")} style={{ marginTop: "1rem", padding: "0.5rem 1rem", cursor: "pointer" }}>
+            Go Back Home
+          </button>
         </div>
       </main>
     );
