@@ -12,18 +12,20 @@ app.set("trust proxy", 1);
 const allowedOriginRegex =
   /^https:\/\/ai-resume-builder-[a-z0-9-]+\.vercel\.app$/;
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOriginRegex.test(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOriginRegex.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
