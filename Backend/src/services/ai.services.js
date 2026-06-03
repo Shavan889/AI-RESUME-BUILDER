@@ -149,11 +149,8 @@ async function generatePdfFromHtml(htmlContent) {
   let browser;
 
   try {
-    const executablePath = await puppeteer.executablePath();
-
     browser = await puppeteer.launch({
       headless: true,
-      executablePath: executablePath,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -168,13 +165,11 @@ async function generatePdfFromHtml(htmlContent) {
       waitUntil: "networkidle0",
     });
 
-    const pdfBuffer = await page.pdf({
+    return await page.pdf({
       format: "A4",
       printBackground: true,
       preferCSSPageSize: true,
     });
-
-    return pdfBuffer;
   } catch (err) {
     console.error("PDF Generation Error:", err);
     throw err;
