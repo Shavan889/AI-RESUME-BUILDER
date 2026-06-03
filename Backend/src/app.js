@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://ai-resume-builder-h7v2.onrender.com",
+    origin: "https://ai-resume-builder-cmmgjzwuh-shavans-projects.vercel.app",
     credentials: true,
   }),
 );
