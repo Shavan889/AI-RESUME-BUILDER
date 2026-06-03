@@ -146,6 +146,7 @@ Return valid JSON only.
 }
 
 async function generatePdfFromHtml(htmlContent) {
+  console.log("Puppeteer executable:", puppeteer.executablePath());
   let browser;
 
   try {
