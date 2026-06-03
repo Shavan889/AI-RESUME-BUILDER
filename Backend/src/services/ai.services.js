@@ -146,7 +146,11 @@ Return valid JSON only.
 }
 
 async function generatePdfFromHtml(htmlContent) {
-  const executablePath = await puppeteer.executablePath();
+  const executablePathCandidate = puppeteer.executablePath();
+  const executablePath =
+    executablePathCandidate && typeof executablePathCandidate.then === "function"
+      ? await executablePathCandidate
+      : executablePathCandidate;
 
   if (!executablePath || typeof executablePath !== "string") {
     throw new Error(
