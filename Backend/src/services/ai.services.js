@@ -211,7 +211,7 @@ Return JSON only:
     contents: prompt,
     config: {
       responseMimeType: "application/json",
-      responseSchema: zodToJsonSchema(resumePdfSchema),
+      responseJsonSchema: zodToJsonSchema(resumePdfSchema),
     },
   });
 
