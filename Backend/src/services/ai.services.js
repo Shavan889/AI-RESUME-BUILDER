@@ -149,9 +149,11 @@ async function generatePdfFromHtml(htmlContent) {
   let browser;
 
   try {
+    const executablePath = await puppeteer.executablePath();
+
     browser = await puppeteer.launch({
       headless: true,
-      executablePath: puppeteer.executablePath(),
+      executablePath: executablePath,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
