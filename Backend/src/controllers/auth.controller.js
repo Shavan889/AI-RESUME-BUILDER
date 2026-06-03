@@ -46,14 +46,11 @@ async function registerUserController(req, res) {
     },
   );
 
-  const cookieOptions = {
+  res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000,
-  };
-
-  res.cookie("token", token, cookieOptions);
+  });
 
   res.status(201).json({
     message: "User registered successfully",
@@ -105,14 +102,11 @@ async function loginUserController(req, res) {
     },
   );
 
-  const cookieOptions = {
+  res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000,
-  };
-
-  res.cookie("token", token, cookieOptions);
+  });
 
   res.status(200).json({
     message: "User loggedIn successfully",
@@ -135,9 +129,9 @@ async function logoutUserController(req, res) {
   if (token) {
     await tokenBlacklistModel.create({ token });
 
-    res.clearCookie("token", {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none",
     });
   }
