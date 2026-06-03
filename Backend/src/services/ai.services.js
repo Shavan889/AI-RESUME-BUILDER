@@ -1,4 +1,3 @@
-```js
 const { GoogleGenAI } = require("@google/genai");
 const z = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
@@ -10,33 +9,41 @@ const ai = new GoogleGenAI({
 
 const interviewReportSchema = z.object({
   matchScore: z.number().min(0).max(100),
-  technicalQuestions: z.array(
-    z.object({
-      question: z.string(),
-      intention: z.string(),
-      answer: z.string(),
-    })
-  ).min(4),
-  behavioralQuestions: z.array(
-    z.object({
-      question: z.string(),
-      intention: z.string(),
-      answer: z.string(),
-    })
-  ).min(3),
-  skillGaps: z.array(
-    z.object({
-      skill: z.string(),
-      severity: z.enum(["low", "medium", "high"]),
-    })
-  ).min(2),
-  preparationPlan: z.array(
-    z.object({
-      day: z.number(),
-      focus: z.string(),
-      tasks: z.array(z.string()).min(1),
-    })
-  ).min(5),
+  technicalQuestions: z
+    .array(
+      z.object({
+        question: z.string(),
+        intention: z.string(),
+        answer: z.string(),
+      }),
+    )
+    .min(4),
+  behavioralQuestions: z
+    .array(
+      z.object({
+        question: z.string(),
+        intention: z.string(),
+        answer: z.string(),
+      }),
+    )
+    .min(3),
+  skillGaps: z
+    .array(
+      z.object({
+        skill: z.string(),
+        severity: z.enum(["low", "medium", "high"]),
+      }),
+    )
+    .min(2),
+  preparationPlan: z
+    .array(
+      z.object({
+        day: z.number(),
+        focus: z.string(),
+        tasks: z.array(z.string()).min(1),
+      }),
+    )
+    .min(5),
   title: z.string(),
 });
 
@@ -176,11 +183,7 @@ async function generatePdfFromHtml(htmlContent) {
   }
 }
 
-async function generateResumePdf({
-  resume,
-  selfDescription,
-  jobDescription,
-}) {
+async function generateResumePdf({ resume, selfDescription, jobDescription }) {
   const resumePdfSchema = z.object({
     html: z.string(),
   });
@@ -232,4 +235,3 @@ module.exports = {
   generateInterviewReport,
   generateResumePdf,
 };
-```
