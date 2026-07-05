@@ -48,7 +48,7 @@ const interviewReportSchema = z.object({
   title: z.string(),
 });
 
-const interviewReportJsonSchema = {
+/*const interviewReportJsonSchema = {
   type: "object",
   properties: {
     matchScore: { type: "number" },
@@ -103,7 +103,10 @@ const interviewReportJsonSchema = {
     },
     title: { type: "string" },
   },
-};
+};*/
+
+
+const interviewReportJsonSchema = zodToJsonSchema(interviewReportSchema);
 
 async function generateInterviewReport({
   resume,
